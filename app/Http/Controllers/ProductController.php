@@ -47,14 +47,7 @@ public function show(string $id) : View|RedirectResponse
 
 $viewData = [];
 
-$products = Product::findOrFail($id);
-
-// Check if the product ID is valid (numeric and within range)
-if (!is_numeric($id) || $id < 1 || $id > count($products)) {
-    return redirect()->route('home.index');
-}
-
-$product = $products[$id-1];
+$product = Product::findOrFail($id);
 
 $viewData["title"] = $product["name"]." - Online Store";
 
@@ -95,7 +88,8 @@ $request->validate([
 
 // For now, we'll simulate saving by adding to the session array
 // In a real application, this would save to the database
-$products = self::getProducts();
+//$products = self::getProducts();
+$products = session()->get('products', []);
 $newId = count($products) + 1;
 $newProduct = [
     "id" => (string)$newId,

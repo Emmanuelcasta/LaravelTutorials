@@ -34,7 +34,7 @@
 
 </h5>
 
-<p class="card-text">{{ $viewData["product"]["description"] }}</p>
+<p class="card-text">{{ $viewData["product"]["price"] }}</p>
 
 <p class="card-text"><strong>Price: ${{ number_format($viewData["product"]["price"], 2) }}</strong></p>
 

@@ -10,24 +10,13 @@ use Illuminate\View\View;
 
 use Illuminate\Http\RedirectResponse;
 
+use App\Models\Product;
+
 
 class ProductController extends Controller
 
 {
 
-private static function getProducts()
-{
-    // Initialize products in session if not exists
-    if (!session()->has('products')) {
-        session()->put('products', [
-            ["id"=>"1", "name"=>"TV", "description"=>"Best TV", "price"=> 1000],
-            ["id"=>"2", "name"=>"iPhone", "description"=>"Best iPhone", "price"=> 999],
-            ["id"=>"3", "name"=>"Chromecast", "description"=>"Best Chromecast", "price"=> 35],
-            ["id"=>"4", "name"=>"Glasses", "description"=>"Best Glasses", "price"=> 100]
-        ]);
-    }
-    return session('products');
-}
 
 private static function saveProducts($products)
 {
@@ -45,7 +34,7 @@ $viewData["title"] = "Products - Online Store";
 
 $viewData["subtitle"] = "List of products";
 
-$viewData["products"] = self::getProducts();
+$viewData["products"] = Product::all();
 
 return view('product.index')->with("viewData", $viewData);
 
@@ -58,7 +47,7 @@ public function show(string $id) : View|RedirectResponse
 
 $viewData = [];
 
-$products = self::getProducts();
+$products = Product::findOrFail($id);
 
 // Check if the product ID is valid (numeric and within range)
 if (!is_numeric($id) || $id < 1 || $id > count($products)) {

@@ -72,19 +72,20 @@ return view('product.create')->with("viewData",$viewData);
 }
 
 
-public function save(Request $request): RedirectResponse
+public function save(Request $request): \Illuminate\Http\RedirectResponse
 
 {
 
 $request->validate([
 
-"name" => "required|max:255",
+"name" => "required",
 
-"description" => "required|max:500",
-
-"price" => "required|numeric|min:0.01"
+"price" => "required"
 
 ]);
+
+Product::create($request->only(["name","price"]));
+
 
 // For now, we'll simulate saving by adding to the session array
 // In a real application, this would save to the database

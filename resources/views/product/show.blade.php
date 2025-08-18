@@ -34,11 +34,17 @@
 
 </h5>
 
-<p class="card-text">{{ $viewData["product"]["price"] }}</p>
-
 <p class="card-text"><strong>Price: ${{ number_format($viewData["product"]["price"], 2) }}</strong></p>
 
 <div class="mt-3">
+
+@foreach($viewData["product"]->comments as $comment)
+
+- {{ $comment->getDescription() }}<br />
+
+@endforeach
+
+<div class="mt-3"></div>
 
 <button class="btn btn-primary">Add to Cart</button>
 

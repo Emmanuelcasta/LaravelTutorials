@@ -1,119 +1,86 @@
 <?php
 
-
 namespace App\Models;
 
-
-use App\Models\Product;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 class Comment extends Model
-
 {
+    use HasFactory;
 
-use HasFactory;
+    /**
+     * PRODUCT ATTRIBUTES
 
+     * $this->attributes['id'] - int - contains the product primary key (id)
 
-/**
+     * $this->attributes['description'] - string - contains the comment description
 
-* PRODUCT ATTRIBUTES
+     * $this->product - Product - contains the associated Product
+     */
+    protected $fillable = ['description', 'product_id'];
 
-* $this->attributes['id'] - int - contains the product primary key (id)
+    public function getId(): int
+    {
 
-* $this->attributes['description'] - string - contains the comment description
+        return $this->attributes['id'];
 
-* $this->product - Product - contains the associated Product
+    }
 
-*/
+    public function setId(int $id): void
+    {
 
+        $this->attributes['id'] = $id;
 
-protected $fillable = ['description', 'product_id'];
+    }
 
+    public function getDescription(): string
+    {
 
-public function getId(): int
+        return $this->attributes['description'];
 
-{
+    }
 
-return $this->attributes['id'];
+    public function setDescription(string $desc): void
+    {
 
-}
+        $this->attributes['description'] = $desc;
 
+    }
 
-public function setId(int $id): void
+    public function getProductId(): int
+    {
 
-{
+        return $this->attributes['product_id'];
 
-$this->attributes['id'] = $id;
+    }
 
-}
+    public function setProductId(int $pId): void
+    {
 
+        $this->attributes['product_id'] = $pId;
 
-public function getDescription(): string
+    }
 
-{
+    public function product(): BelongsTo
+    {
 
-return $this->attributes['description'];
+        return $this->belongsTo(Product::class);
 
-}
+    }
 
+    public function getProduct(): Product
+    {
 
-public function setDescription(string $desc): void
+        return $this->product;
 
-{
+    }
 
-$this->attributes['description'] = $desc;
+    public function setProduct($product): void
+    {
 
-}
+        $this->product = $product;
 
-
-public function getProductId(): int
-
-{
-
-return $this->attributes['product_id'];
-
-}
-
-
-public function setProductId(int $pId): void
-
-{
-
-$this->attributes['product_id'] = $pId;
-
-}
-
-
-public function product(): BelongsTo
-
-{
-
-return $this->belongsTo(Product::class);
-
-}
-
-
-public function getProduct(): Product
-
-{
-
-return $this->product;
-
-}
-
-
-public function setProduct($product): void
-
-{
-
-$this->product = $product;
-
-}
-
+    }
 }

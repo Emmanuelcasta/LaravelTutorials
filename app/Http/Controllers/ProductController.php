@@ -1,123 +1,104 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
-
+use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-
 use Illuminate\View\View;
 
-use Illuminate\Http\RedirectResponse;
-
-use App\Models\Product;
-
-
 class ProductController extends Controller
-
 {
+    private static function saveProducts($products)
+    {
+        session()->put('products', $products);
+    }
 
+    public function index(): View
+    {
 
-private static function saveProducts($products)
-{
-    session()->put('products', $products);
-}
+        $viewData = [];
 
+        $viewData['title'] = 'Products - Online Store';
 
-public function index(): View
+        $viewData['subtitle'] = 'List of products';
 
-{
+        $viewData['products'] = Product::all();
 
-$viewData = [];
+        return view('product.index')->with('viewData', $viewData);
 
-$viewData["title"] = "Products - Online Store";
+    }
 
-$viewData["subtitle"] = "List of products";
+    public function show(string $id): View|RedirectResponse
+    {
 
-$viewData["products"] = Product::all();
+        $viewData = [];
 
-return view('product.index')->with("viewData", $viewData);
+        $product = Product::findOrFail($id);
 
-}
+        $viewData['title'] = $product['name'].' - Online Store';
 
+        $viewData['subtitle'] = $product['name'].' - Product information';
 
-public function show(string $id) : View|RedirectResponse
+        $viewData['product'] = $product;
 
-{
+        return view('product.show')->with('viewData', $viewData);
 
-$viewData = [];
+    }
 
-$product = Product::findOrFail($id);
+    public function create(): View
+    {
 
-$viewData["title"] = $product["name"]." - Online Store";
+        $viewData = []; // to be sent to the view
 
-$viewData["subtitle"] = $product["name"]." - Product information";
+        $viewData['title'] = 'Create product';
 
-$viewData["product"] = $product;
+        return view('product.create')->with('viewData', $viewData);
 
-return view('product.show')->with("viewData", $viewData);
+    }
 
-}
-public function create(): View
+    public function save(Request $request): \Illuminate\Http\RedirectResponse
+    {
 
-{
+        $request->validate([
 
-$viewData = []; //to be sent to the view
+            'name' => 'required',
 
-$viewData["title"] = "Create product";
+            'price' => 'required',
 
+        ]);
 
-return view('product.create')->with("viewData",$viewData);
+        Product::create($request->only(['name', 'price']));
 
-}
+        // For now, we'll simulate saving by adding to the session array
+        // In a real application, this would save to the database
+        // $products = self::getProducts();
+        $products = session()->get('products', []);
+        $newId = count($products) + 1;
+        $newProduct = [
+            'id' => (string) $newId,
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'price' => (float) $request->input('price'),
+        ];
 
+        // Add the new product to the array and save to session
+        $products[] = $newProduct;
+        self::saveProducts($products);
 
-public function save(Request $request): \Illuminate\Http\RedirectResponse
+        // Redirect to success page
+        return redirect()->route('product.success');
 
-{
+    }
 
-$request->validate([
+    public function success(): View
+    {
 
-"name" => "required",
+        $viewData = [];
 
-"price" => "required"
+        $viewData['title'] = 'Product Created - Online Store';
 
-]);
+        return view('product.success')->with('viewData', $viewData);
 
-Product::create($request->only(["name","price"]));
-
-
-// For now, we'll simulate saving by adding to the session array
-// In a real application, this would save to the database
-//$products = self::getProducts();
-$products = session()->get('products', []);
-$newId = count($products) + 1;
-$newProduct = [
-    "id" => (string)$newId,
-    "name" => $request->input('name'),
-    "description" => $request->input('description'),
-    "price" => (float)$request->input('price')
-];
-
-// Add the new product to the array and save to session
-$products[] = $newProduct;
-self::saveProducts($products);
-
-// Redirect to success page
-return redirect()->route('product.success');
-
-}
-
-public function success(): View
-
-{
-
-$viewData = [];
-
-$viewData["title"] = "Product Created - Online Store";
-
-return view('product.success')->with("viewData", $viewData);
-
-}
-
+    }
 }

@@ -48,8 +48,9 @@
 
 <button class="btn btn-primary">Add to Cart</button>
 
-<button class="btn btn-outline-secondary ms-2">Add to Wishlist</button>
-
+<button class="btn btn-outline-secondary ms-2">Agregar al carrito</button>
+<a href="{{ route('cart.add', ['id' => $viewData['product']['id']]) }}" class="btn btn-outline-secondary ms-2">Agregar al carrito</a>
+<a href="{{ route('cart.index') }}" class="btn btn-outline-secondary ms-2">Ir al carrito</a>
 </div>
 
 </div>
